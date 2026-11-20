@@ -1,0 +1,28 @@
+[project]
+name = "ai-incident-resolution-recommender"
+version = "0.1.0"
+description = "An AI-powered incident management solution using LLMs and RAG"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.165.0",
+    "huggingface-hub",
+    "langchain-chroma>=1.1.0",
+    "langchain-core>=1.8.3",
+    "langchain-groq",
+    "langchain-huggingface>=1.2.3",
+    "langchain-text-splitters>=1.1.3",
+    "matplotlib",
+    "pandas",
+    "pyarrow",
+    "pydantic-settings>=2.16.3",
+    "python-docx>=1.2.0",
+    "python-multipart>=0.0.34",
+    "sentence-transformers>=6.3.0",
+    "tiktoken>=0.14.0",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.4.0",
+]
