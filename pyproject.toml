@@ -1,7 +1,7 @@
 [project]
 name = "ai-incident-resolution-recommender"
 version = "0.1.0"
-description = "An AI-powered incident management solution using LLMs and RAG"
+description = "An AI-powered incident management solution using LLMs and RAG to analyze production incidents and recommend relevant resolution steps. Retrieves insights from historical incidents and knowledge bases to deliver context-aware recommendations, reduce manual investigation, and accelerate incident resolution."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

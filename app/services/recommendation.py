@@ -43,12 +43,7 @@ def _message_text(content) -> str:
     return str(content).strip()
 
 
-async def get_recommendation(
-    req_id: str,
-    category: str,
-    issue_description: str,
-    incident_id: str,
-) -> RecommendationResponse:
+async def get_recommendation(req_id: str, category: str, issue_description: str, incident_id: str,) -> RecommendationResponse:
     logger = setup_logger(__name__, req_id)
     request_started = perf_counter()
     response_status = status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -83,6 +78,8 @@ async def get_recommendation(
         stage = "retrieval"
         context = ""
         try:
+
+            #--------retreival-----------------
             embedding = Hugging_face_embedding(
                 settings.huggingface_embedding_model_name,
                 settings.huggingface_api,
@@ -104,6 +101,8 @@ async def get_recommendation(
                 len(relevant_docs),
                 settings.collection_name,
             )
+
+            #------------retrieval tracing----------
             for rank, document in enumerate(relevant_docs, start=1):
                 logger.info(
                     "Retrieved document: rank=%d id=%s source=%s",
@@ -127,6 +126,7 @@ async def get_recommendation(
                 incident_id,
             )
 
+        #----------interact with LLM-------------
         prompt = recommendation_prompt(
             category=category,
             issue_description=issue_description,
