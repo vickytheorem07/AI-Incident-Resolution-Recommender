@@ -20,6 +20,7 @@ dependencies = [
     "python-multipart>=0.0.34",
     "sentence-transformers>=6.3.0",
     "tiktoken>=0.14.0",
+    "uvicorn[standard]>=0.34.0",
 ]
 
 [dependency-groups]

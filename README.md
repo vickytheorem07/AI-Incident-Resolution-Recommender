@@ -15,12 +15,12 @@ A FastAPI service that retrieves similar historical support tickets from Chroma 
 ## Requirements
 
 - Python 3.11 or newer
-- [uv](https://docs.astral.sh/uv/)
+- [uv](https://docs.astral.sh/uv/) for local development, or Docker for containerized use
 - A Groq API key
 
 ## Setup
 
-Install the locked project dependencies:
+Install the locked project dependencies (including the API server):
 
 ```bash
 uv sync
@@ -47,7 +47,7 @@ top_k=3
 ## Run the API
 
 ```bash
-uv run --with "uvicorn[standard]" uvicorn app.main:app --reload
+uv run uvicorn app.main:app --reload
 ```
 
 The API is available at `http://127.0.0.1:8000`. Interactive API docs are at `http://127.0.0.1:8000/docs`; the health check is `GET /health`.
@@ -103,3 +103,26 @@ If no supported resolution can be found, the model is instructed to return `Solu
 Application logs are written to the console and to `logs/app.log` by default. You can set `LOG_DIR`, `LOG_FILE`, and `LOG_LEVEL` in the environment. Logs include request IDs, timing, counts, and token usage when available; ticket descriptions and resolution text are not logged.
 
 Chroma persists data under `chroma_db` by default. Keep the database directory available across restarts if you want to retain the indexed tickets.
+
+## Run with Docker
+
+Build the image from the project root:
+
+```bash
+docker build -t incident-resolution-recommender .
+```
+
+Pass the required settings from your local `.env` file and mount directories for the Chroma database and application logs:
+
+```bash
+docker run --rm --name incident-recommender \
+  --env-file .env \
+  -p 8000:8000 \
+  -v incident-chroma:/app/chroma_db \
+  -v incident-logs:/app/logs \
+  incident-resolution-recommender
+```
+
+The container listens on port `8000`; open `http://localhost:8000/docs` for the API documentation or `http://localhost:8000/health` for the health check. The named volumes keep indexed tickets and logs across container recreations. The image does not include `.env`; provide secrets at runtime with `--env-file` or individual `-e NAME=value` options. At minimum, set `groq_llm_api_key` and `LANGSMITH_API_KEY`. You can pass the optional settings documented above the same way.
+
+The first request that needs embeddings may download the configured Hugging Face model inside the container. To retain that model cache between runs, add `-v incident-huggingface:/root/.cache/huggingface` to `docker run`.
